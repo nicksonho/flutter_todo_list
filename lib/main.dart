@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../pages/home_page.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create:(context) => StatisticModel(
+      currentList: [],
+      recentlyDeleted: [],
+    ),
+    child: MyApp()
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,123 +25,38 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Color.fromARGB(255, 206, 172, 144)
       ),
-      home: TodoPage()
-    );
-  }
-}
-class TodoPage extends StatelessWidget {
-  const TodoPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    
-    return Scaffold(
-      appBar: appBar(),
-      body: ListColumn(),
+      home: HomePage()
     );
   }
 }
 
-AppBar appBar() {
-  return AppBar(
-    centerTitle: true,
-    title: Text('To-do list'),
-    titleTextStyle: TextStyle(
-      color: Color.fromARGB(255, 110, 54, 8),
-      fontSize: 14,
-      fontWeight: FontWeight.bold,
-    ),
-    backgroundColor: Color.fromARGB(255, 206, 172, 144),
-  );
-}
+class StatisticModel extends ChangeNotifier {
+  List<String> _currentList;
+  List<String> _recentlyDeleted;
 
+  StatisticModel({
+    required List<String> currentList,
+    required List<String> recentlyDeleted,
+  }) : _currentList = currentList,
+       _recentlyDeleted = recentlyDeleted;
 
+  // Getter methods (expose lists without allowing direct modification)
+  List<String> get currentList => List.unmodifiable(_currentList);
+  List<String> get recentlyDeleted => List.unmodifiable(_recentlyDeleted);
 
-class ListColumn extends StatefulWidget {
-  const ListColumn({super.key});
-
-  @override
-  State<ListColumn> createState() => _ListColumnState();
-}
-
-class _ListColumnState extends State<ListColumn> {
-  final List<TextEditingController> _controllers = [];
-
-  void _addTodoItem() {
-    setState(() {
-      _controllers.add(TextEditingController());
-    });
+  void addCurrent(String item) {
+    _currentList = [..._currentList, item];
+    notifyListeners(); // Critical for UI updates
   }
 
-  void _removeTodoItem(int index) {
-    setState(() {
-      _controllers.removeAt(index);
-    });
+  void addDeleted(String item) {
+    _recentlyDeleted = [..._recentlyDeleted, item];
+    notifyListeners();
   }
 
-  @override
-  void dispose() {
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView.builder(
-        itemCount: _controllers.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                MyCheckbox(),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: _controllers[index],
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                      )
-                    ),
-                  )  
-                ),
-                IconButton(
-                  onPressed: () => _removeTodoItem(index), 
-                  icon: Icon(Icons.delete)
-                )              
-              ]
-            )
-          );
-        }
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addTodoItem,
-        child: Icon(Icons.add)), 
-    );
-  }
-}
-
-class MyCheckbox extends StatefulWidget {
-  @override
-  _MyCheckboxState createState() => _MyCheckboxState();
-}
-
-class _MyCheckboxState extends State<MyCheckbox> {
-  bool isChecked = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Checkbox(
-      value: isChecked,
-      onChanged: (bool? newValue) {
-        setState(() {
-          isChecked = newValue ?? false;
-        });
-      },
-    );
+  void removeCurrent(String item) {
+    _currentList = _currentList.where((i) => i != item).toList();
+    _recentlyDeleted = [..._recentlyDeleted, item];
+    notifyListeners();
   }
 }

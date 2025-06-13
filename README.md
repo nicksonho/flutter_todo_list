@@ -7,4 +7,5 @@ This to-do list will be like any other:
 3. Delete button
 
 Possible features:
-1. Priority sort.
+1. Priority sort
+2. tracking number of tasks of each priority and completion stage
