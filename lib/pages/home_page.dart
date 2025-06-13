@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/my_navigation_bar.dart';
+import '../pages/statistics_page.dart'; // Import the StatisticPage
 
 
 class HomePage extends StatefulWidget {
@@ -19,10 +20,17 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
-    
+    Widget page;
+    if (currentPageIndex == 0) {
+      page = ListColumn();
+    } else if (currentPageIndex == 1) {
+      page = StatisticPage();
+    } else {
+      page = Placeholder();
+    }
     return Scaffold(
       appBar: appBar(),
-      body: ListColumn(),
+      body: page,
       bottomNavigationBar: MyNavigationBar(
         currentIndex: currentPageIndex,
         onDestinationSelected: _onDestinationSelected

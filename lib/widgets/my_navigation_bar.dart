@@ -15,7 +15,8 @@ class MyNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
-      onDestinationSelected: onDestinationSelected,
+      selectedIndex: currentIndex,
+      onDestinationSelected: onDestinationSelected, 
       indicatorColor: indicatorColor,
       destinations: const <Widget>[
         NavigationDestination(
