@@ -20,6 +20,8 @@ class StatisticPage extends StatelessWidget {
       title: Text("Tasks"),
       children: [
           ListView.builder(
+
+            
           shrinkWrap: true,
           itemCount: tasks.length,
           itemBuilder: (context, index) {

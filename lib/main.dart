@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/pages/statistics_page.dart';
 import '../pages/home_page.dart';
+import 'todo_model.dart';
 
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create:(context) => StatisticModel(
-      currentList: [],
-      recentlyDeleted: [],
-    ),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create:(context) => StatisticModel(
+          currentList: [],
+          recentlyDeleted: [],
+        )
+      ),
+      ChangeNotifierProvider(
+        create:(context) => ToDoModel()
+      ),
+    ],
     child: MyApp()
     )
   );

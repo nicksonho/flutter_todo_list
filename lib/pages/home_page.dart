@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list/todo_model.dart';
 import '../widgets/my_navigation_bar.dart';
-import '../pages/statistics_page.dart'; // Import the StatisticPage
-
+import '../pages/statistics_page.dart';
+import '../widgets/todo_item_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -54,70 +56,30 @@ AppBar appBar() {
 }
 
 
-
-class ListColumn extends StatefulWidget {
+class ListColumn extends StatelessWidget{
   const ListColumn({super.key});
 
   @override
-  State<ListColumn> createState() => _ListColumnState();
-}
-
-class _ListColumnState extends State<ListColumn> {
-  final List<TextEditingController> _controllers = [];
-
-  void _addTodoItem() {
-    setState(() {
-      _controllers.add(TextEditingController());
-    });
-  }
-
-  void _removeTodoItem(int index) {
-    setState(() {
-      _controllers.removeAt(index);
-    });
-  }
-
-  @override
-  void dispose() {
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final todoModel = Provider.of<ToDoModel>(context);
     return Scaffold(
       body: ListView.builder(
-        itemCount: _controllers.length,
+        itemCount: todoModel.taskList.length,
         itemBuilder: (context, index) {
+          final item = todoModel.taskList[index];
           return Padding(
             padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                MyCheckbox(),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: _controllers[index],
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                      )
-                    ),
-                  )  
-                ),
-                IconButton(
-                  onPressed: () => _removeTodoItem(index), 
-                  icon: Icon(Icons.delete)
-                )              
-              ]
+            child: ToDoItemTile(
+              item: item,
+              onChanged: (checked) => todoModel.toggleCheck(index),
+              onTextChanged: (text) => todoModel.updateText(index, text),
+              onRemove: () => todoModel.removeToDoItem(index),
             )
           );
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addTodoItem,
+        onPressed: () => todoModel.addToDoItem(''),
         child: Icon(Icons.add)), 
     );
   }
@@ -127,6 +89,7 @@ class MyCheckbox extends StatefulWidget {
   const MyCheckbox({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyCheckboxState createState() => _MyCheckboxState();
 }
 
