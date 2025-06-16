@@ -26,8 +26,8 @@ class ToDoItemTile extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(3.0),
-            child: TextField(
-              controller: TextEditingController(text: item.text),
+            child: TextFormField(
+              initialValue : item.text,
               onChanged: onTextChanged,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),

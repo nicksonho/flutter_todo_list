@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list/todo_model.dart';
+import 'package:todo_list/models/todo_model.dart';
+import 'package:todo_list/todo_item.dart';
 import '../widgets/my_navigation_bar.dart';
 import '../pages/statistics_page.dart';
 import '../widgets/todo_item_tile.dart';
@@ -71,7 +72,11 @@ class ListColumn extends StatelessWidget{
             padding: const EdgeInsets.all(8),
             child: ToDoItemTile(
               item: item,
-              onChanged: (checked) => todoModel.toggleCheck(index),
+              onChanged: (checked) {
+                if (checked != null) {
+                  todoModel.toggleCheck(index);
+                }
+              },
               onTextChanged: (text) => todoModel.updateText(index, text),
               onRemove: () => todoModel.removeToDoItem(index),
             )
@@ -79,7 +84,7 @@ class ListColumn extends StatelessWidget{
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => todoModel.addToDoItem(''),
+        onPressed: () => todoModel.addToDoItem(ToDoItem(text:'')),
         child: Icon(Icons.add)), 
     );
   }
