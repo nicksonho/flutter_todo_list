@@ -8,20 +8,18 @@ class StatisticPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TasksTile(context),
-        DeletedTile(context)
+        tasksTile(context),
+        deletedTile(context)
       ],
     );
   }
 
-  ExpansionTile TasksTile(BuildContext context) {
+  ExpansionTile tasksTile(BuildContext context) {
     final tasks = Provider.of<StatisticModel>(context).currentList;
     return ExpansionTile(
       title: Text("Tasks"),
       children: [
-          ListView.builder(
-
-            
+        ListView.builder(
           shrinkWrap: true,
           itemCount: tasks.length,
           itemBuilder: (context, index) {
@@ -34,7 +32,7 @@ class StatisticPage extends StatelessWidget {
     );
   }
 
-  ExpansionTile DeletedTile(BuildContext context) {
+  ExpansionTile deletedTile(BuildContext context) {
     final deleted = Provider.of<StatisticModel>(context).recentlyDeleted;
     return ExpansionTile(
       title: Text("Recently Deleted"),
